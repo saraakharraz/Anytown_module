@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 declare(strict_types=1);
 
@@ -42,36 +42,92 @@ class WeatherPage extends ControllerBase {
   /**
    * Builds the response.
    */
-  public function build(string $style): array {
-    // Style should be one of 'short', or 'extended'. And default to 'short'.
+  public function build(string $style): array { 
     $style = (in_array($style, ['short', 'extended'])) ? $style : 'short';
 
     $url = 'https://raw.githubusercontent.com/DrupalizeMe/module-developer-guide-demo-site/main/backups/weather_forecast.json';
     $forecast_data = $this->forecastClient->getForecastData($url);
+
+    $rows = [];
+    $highest = 0;
+    $lowest = 0;
     if ($forecast_data) {
-      $forecast = '<ul>';
+    
       foreach ($forecast_data as $item) {
         [
           'weekday' => $weekday,
           'description' => $description,
           'high' => $high,
           'low' => $low,
+          'icon' => $icon,
         ] = $item;
-        $forecast .= "<li>$weekday will be <em>$description</em> with a high of $high and a low of $low.</li>";
+
+        $rows[] = [
+
+          $weekday,
+   
+          [
+            'data' => [
+              '#markup' => '<img alt="' . $description . '" src="' . $icon . '" width="200" height="200" />',
+            ],
+          ],
+          [
+            'data' => [
+              '#markup' => "<em>{$description}</em> with a high of {$high} and a low of {$low}",
+            ],
+          ],
+        ];
+        $highest = max($highest, $high);
+        $lowest = min($lowest, $low);
+
       }
-      $forecast .= '</ul>';
+
+      $weather_forecast = [
+        '#type' => 'table',
+        '#header' => [
+          'Day',
+          '',
+          'Forecast',
+        ],
+        '#rows' => $rows,
+        '#attributes' => [
+          'class' => ['weather_page--forecast-table'],
+        ],
+      ];
+
+       $short_forecast = [
+        '#type' => 'markup',
+        '#markup' => "The high for the weekend is {$highest} and the low is {$lowest}.",
+      ];
+
     }
     else {
-      $forecast = '<p>Could not get the weather forecast. Dress for anything.</p>';
+     
+      $weather_forecast = ['#markup' => '<p>Could not get the weather forecast. Dress for anything.</p>'];
+      $short_forecast = NULL;
     }
 
-    $output = "<p>Check out this weekend's weather forecast and come prepared. The market is mostly outside, and takes place rain or shine.</p>";
-    $output .= $forecast;
-    $output .= '<h3>Weather related closures</h3></h3><ul><li>Ice rink closed until winter - please stay off while we prepare it.</li><li>Parking behind Apple Lane is still closed from all the rain last week.</li></ul>';
-
-    return [
-      '#markup' => $output,
+    $build = [
+      '#theme' => 'weather_page',
+      '#attached' => [
+        'library' => ['anytown/forecast'],
+      ],
+      '#weather_intro' => [
+        '#markup' => "<p>Check out this weekend's weather forecast and come prepared. The market is mostly outside, and takes place rain or shine.</p>",
+      ],
+      '#weather_forecast' => $weather_forecast,
+      '#short_forecast' => $short_forecast,
+      '#weather_closures' => [
+        '#theme' => 'item_list',
+        '#title' => 'Weather related closures',
+        '#items' => [
+          'Ice rink closed until winter - please stay off while we prepare it.',
+          'Parking behind Apple Lane is still closed from all the rain last weekend.',
+        ],
+      ],
     ];
+
+    return $build;
   }
 
 }
