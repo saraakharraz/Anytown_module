@@ -126,7 +126,12 @@ class WeatherPage extends ControllerBase {
           $this->t('Parking behind Apple Lane is still closed from all the rain last weekend.'),
         ],
       ],
+      '#cache' => [
+          'max-age' => 0
+        ],
     ];
+
+   
 
     return $build;
   }

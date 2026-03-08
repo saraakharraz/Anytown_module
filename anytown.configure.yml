@@ -1,0 +1,6 @@
+anytown.configure:
+  title: 'How to configure Anytown'
+  body: 'help_topics/anytown.configure.html.twig'
+  top_level: true
+  related:
+    - core.extending

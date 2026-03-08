@@ -1,5 +1,4 @@
 anytown.weather_page:
-  # 
   path: '/weather/{style}'
   defaults:
     _title: 'Weather at the market'
@@ -7,3 +6,11 @@ anytown.weather_page:
     style: 'short'
   requirements:
     _permission: 'view weekly weather'
+
+anytown.settings:
+  path: '/admin/config/system/anytown'
+  defaults:
+    _title: 'Anytown Settings'
+    _form: 'Drupal\anytown\Form\SettingsForm'
+  requirements:
+    _permission: 'administer site configuration'

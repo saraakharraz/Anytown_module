@@ -3,3 +3,9 @@ anytown.weather:
   description: Check this weeks weather
   route_name: anytown.weather_page
   menu_name: main
+
+anytown.settings:
+  title: Anytown Settings
+  parent: system.admin_config_system
+  route_name: anytown.settings
+  weight: 10
