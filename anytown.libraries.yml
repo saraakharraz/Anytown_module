@@ -4,5 +4,8 @@ forecast:
       css/forecast.css: {}
   js:
     js/forecast.js: {}
+    https://unpkg.com/@tailwindcss/browser@4:
+      type: external
+      minified: true
   dependencies:
     - core/drupal.once
