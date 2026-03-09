@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Main module file for the Anytown module.
+ */
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function anytown_preprocess_page(&$variables) {
+
+  // Check if the current page is the front page.
+  $is_front = \Drupal::service('path.matcher')->isFrontPage();
+
+  // Send variable to Twig.
+  $variables['is_front'] = $is_front;
+
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function anytown_page_attachments_alter(array &$attachments) {
+
+  $attachments['#attached']['html_head'][] = [
+    [
+      '#tag' => 'meta',
+      '#attributes' => [
+        'name' => 'viewport',
+        'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no',
+      ],
+    ],
+    'anytown_viewport_meta',
+  ];
+
+}

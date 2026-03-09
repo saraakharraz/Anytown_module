@@ -1,0 +1,3 @@
+display_forecast: true
+location: '00000'
+weather_closures: 'None'
